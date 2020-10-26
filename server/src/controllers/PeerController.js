@@ -13,11 +13,14 @@ module.exports = {
     },
 
     async post(req, res) {
+      const { ip, port } = req.get('host').split(':')
       const { filesNames, filesHashes, id } = req.body
       peers.push({
         id,
         filesNames,
-        filesHashes
+        filesHashes,
+        ip,
+        port,
       })
       
       const peer = peers.filter(peer => {
@@ -27,6 +30,8 @@ module.exports = {
     },
 
     async healthCheck(req, res) {
-
+      const { ip, port } = req.get('host').split(':')
+      const time = new Date.getTime()
+      const { id } = req.body
     }
 }
