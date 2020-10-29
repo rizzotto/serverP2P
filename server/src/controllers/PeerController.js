@@ -6,25 +6,25 @@ module.exports = {
     },
 
     async resource(req, res) {
-        const specificPeer = peers.filter(peer => {
-          if(peer.id === req.params.id) return peer
+        const { id } = req.body
+        const specificFile = peers.map(peer => {
+          if(peer.files.id === id) return peer
         })
-        res.send(specificPeer)
+        res.send(specificFile)
     },
 
     async post(req, res) {
       const { ip, port } = req.get('host').split(':')
-      const { filesNames, filesHashes, id } = req.body
+      const { files } = req.body
+      console.log(files)
       peers.push({
-        id,
-        filesNames,
-        filesHashes,
+        files,
         ip,
         port,
       })
       
       const peer = peers.filter(peer => {
-        if(peer.id === id) return peer
+        if(peer.port === port) return peer
       })
       res.send(peer)
     },
