@@ -1,6 +1,19 @@
 let peers = []
+let peersOverlay = []
 
 module.exports = {
+    validateRestCall() {
+      const currentDate = new Date()
+      const currentHour = currentDate.getHours()
+      const currentMinute = currentDate.getMinutes()
+      const currentSecond = currentDate.getSeconds()
+
+      // TODO - pensar sobre como validar o healthCheck - e chamar essa função em uma Thread
+      peersOverlay.map(peer => {
+        if(peer.hours === currentDate && peer.minutes ) return 
+      })
+    },
+
     async resources(req, res) {
         res.send(peers)
     },
@@ -31,7 +44,16 @@ module.exports = {
 
     async healthCheck(req, res) {
       const { ip, port } = req.get('host').split(':')
-      const time = new Date.getTime()
-      const { id } = req.body
+      const time = new Date()
+
+      peersOverlay.push({
+        ip,
+        port,
+        hours: time.getHours(),
+        minutes: time.getMinutes(),
+        seconds: time.getSeconds(),
+      
+      })
+
     }
 }
