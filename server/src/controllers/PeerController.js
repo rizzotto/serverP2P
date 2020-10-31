@@ -1,18 +1,19 @@
 let peers = []
 let peersOverlay = []
 
-module.exports = {
-    validateRestCall() {
-      const currentDate = new Date()
-      const currentHour = currentDate.getHours()
-      const currentMinute = currentDate.getMinutes()
-      const currentSecond = currentDate.getSeconds()
+function validateRestCall() {
+  const currentDate = new Date()
 
-      // TODO - pensar sobre como validar o healthCheck - e chamar essa função em uma Thread
-      peersOverlay.map(peer => {
-        if(peer.hours === currentDate && peer.minutes ) return 
-      })
-    },
+  // TODO - chamar essa função em uma Thread
+  peersOverlay.map(peer => {
+    if((currentDate.getTime() - peer.time) / 1000 > 5) {
+      const index = peersOverlay.indexOf(peer)
+      peersOverlay.splice(index, 1)
+    }
+  })
+}
+
+module.exports = {
 
     async resources(req, res) {
         res.send(peers)
@@ -27,33 +28,37 @@ module.exports = {
     },
 
     async post(req, res) {
-      const { ip, port } = req.get('host').split(':')
+      const path = req.get('host').split(':')
       const { files } = req.body
-      console.log(files)
       peers.push({
         files,
-        ip,
-        port,
+        ip: path[0],
+        port: path[1],
       })
       
       const peer = peers.filter(peer => {
-        if(peer.port === port) return peer
+        if(peer.port === path[1]) return peer
       })
       res.send(peer)
     },
 
     async healthCheck(req, res) {
-      const { ip, port } = req.get('host').split(':')
+      const path = req.get('host').split(':')
       const time = new Date()
-
-      peersOverlay.push({
-        ip,
-        port,
-        hours: time.getHours(),
-        minutes: time.getMinutes(),
-        seconds: time.getSeconds(),
+  
+      const found = peersOverlay.find(element => element.port === path[1]);
       
-      })
-
+      if(found !== undefined) {
+        peersOverlay.map(peer => {
+          // TODO - colocar todo o objeto
+          if(peer.port === path[1]) peer.time = time.getTime()
+        })
+      } else {
+        peersOverlay.push({
+          ip: path[0],
+          port: path[1],
+          time: time.getTime(),
+        })
+      }
     }
 }
