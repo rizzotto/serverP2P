@@ -15,6 +15,7 @@ module.exports = {
     async post(req, res) {
       const { ip, port } = req.get('host').split(':')
       const { filesNames, filesHashes, id } = req.body
+      console.log(req.body)
       peers.push({
         id,
         filesNames,
