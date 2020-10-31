@@ -6,7 +6,7 @@ const PeerController = require('./controllers/PeerController')
 
 routes.get('/resources', PeerController.resources)
 routes.get('/resource/:id', PeerController.resource)
-routes.get('/health', PeerController.healthCheck)
+routes.patch('/health', PeerController.healthCheck)
 routes.post('/peer', PeerController.post)
 
 
