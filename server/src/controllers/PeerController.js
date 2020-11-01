@@ -39,19 +39,36 @@ module.exports = {
         if(!found) res.send('recurso não encontrado')
     },
 
-    //mudar p se existir o peer, alterar so
     async post(req, res) {
       const path = req.get('host').split(':')
       const { files } = req.body
       const time = new Date()
 
       //TODO atualizar o peer se ja existir, e nao criar outro objeto
-      peers.push({
-        files,
-        ip: path[0],
-        port: path[1],
-        time: time.getTime()
-      })
+
+      if(peers.length === 0) {
+        peers.push({
+          files,
+          ip: path[0],
+          port: path[1],
+          time: time.getTime()
+        })
+      } else {
+        peers.map(peer => {
+          if(peer.port === path[1]) {
+            peer.files = files
+            peer.time = time.getTime()
+          }else {
+            peers.push({
+              files,
+              ip: path[0],
+              port: path[1],
+              time: time.getTime()
+            })
+          }
+        })
+      }
+      
 
       const peer = peers.filter(peer => {
         if(peer.port === path[1]) return peer
