@@ -20,25 +20,39 @@ module.exports = {
     },
     
     async resource(req, res) {
-        const { id } = req.body
-        const specificFile = peers.map(peer => {
-          if(peer.files.id === id) return peer
+        const { id } = req.params
+        let found = false
+        peers.map(peer => {
+          peer.files.map(file => {
+            if(file.id === id){
+              found = true
+              const ip = peer.ip
+              const port = peer.port
+              return res.send({
+                ip,
+                port,
+                file
+              })
+            } 
+          })
         })
-        res.send(specificFile)
+        if(!found) res.send('recurso não encontrado')
     },
 
+    //mudar p se existir o peer, alterar so
     async post(req, res) {
       const path = req.get('host').split(':')
       const { files } = req.body
       const time = new Date()
 
+      //TODO atualizar o peer se ja existir, e nao criar outro objeto
       peers.push({
         files,
         ip: path[0],
         port: path[1],
         time: time.getTime()
       })
-      
+
       const peer = peers.filter(peer => {
         if(peer.port === path[1]) return peer
       })
