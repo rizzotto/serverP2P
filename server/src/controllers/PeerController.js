@@ -1,16 +1,16 @@
 let peers = []
 
 // healthCheck
-//setInterval(function() {
-//  const currentDate = new Date()
-//
-//  peers.map(peer => {
-//    if((currentDate.getTime() - peer.time) / 1000 > 5) {
-//      const index = peers.indexOf(peer)
-//      peers.splice(index, 1)
-//    }
-//  })
-//}, 5000);
+setInterval(function() {
+ const currentDate = new Date()
+
+ peers.map(peer => {
+   if((currentDate.getTime() - peer.time) / 1000 > 5) {
+     const index = peers.indexOf(peer)
+     peers.splice(index, 1)
+   }
+ })
+}, 5000);
 
 
 module.exports = {
