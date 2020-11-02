@@ -16,10 +16,15 @@ setInterval(function() {
 module.exports = {
 
     async resources(req, res) {
+      try {
         res.send(peers)
+      } catch(e) {
+        console.log(e)
+      }
     },
     
     async resource(req, res) {
+      try{
         const { id } = req.params
         let found = false
         peers.map(peer => {
@@ -37,54 +42,65 @@ module.exports = {
           })
         })
         if(!found) res.send('recurso não encontrado')
+      } catch(e) {
+        console.log(e)
+      }
     },
 
     async post(req, res) {
-      const { files, port, ip } = req.body
-
-      const time = new Date()
-
-      if(peers.length === 0) {
-        peers.push({
-          files,
-          ip,
-          port,
-          time: time.getTime()
-        })
-      } else {
-        peers.map(peer => {
-          if(peer.port == port && peer.ip==ip) {
-            peer.files = files
-            peer.time = time.getTime()
-          }else {
-            peers.push({
-              files,
-              ip,
-              port,
-              time: time.getTime()
-            })
-          }
-        })
-      }
       
+      try {
 
-      const peer = peers.filter(peer => {
-        if(peer.port == port && peer.ip==ip) return peer
-      })
-      res.send(peer)
+        const { files, port, ip } = req.body
+        const time = new Date()
+        if(peers.length === 0) {
+          peers.push({
+            files,
+            ip,
+            port,
+            time: time.getTime()
+          })
+        } else {
+          peers.map(peer => {
+            if(peer.port == port && peer.ip==ip) {
+              peer.files = files
+              peer.time = time.getTime()
+            }else {
+              peers.push({
+                files,
+                ip,
+                port,
+                time: time.getTime()
+              })
+            }
+          })
+        }
+        
+  
+        const peer = peers.filter(peer => {
+          if(peer.port == port && peer.ip==ip) return peer
+        })
+        res.send(peer)
+      }catch(e) {
+        console.log(e)
+      }
+
     },
 
     async healthCheck(req, res) {
-      const { port, ip } = req.body
-      const time = new Date()
-
       
-      peers.map(peer => {
+      try {
+
+        const { port, ip } = req.body
+        const time = new Date()
         
-        if(peer.port == port && peer.ip==ip) peer.time = time.getTime()
-
-      })
-
-      res.send(peers)
+        peers.map(peer => {  
+          if(peer.port == port && peer.ip==ip) peer.time = time.getTime()
+        })
+  
+        res.send(peers)
+      } catch(e) {
+        console.log(e)
+      }
     }
 }
