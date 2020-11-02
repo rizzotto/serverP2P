@@ -36,13 +36,19 @@ const command = {
     const socket = io(`http://${response.ip}:${response.port}`);    
     
     socket.emit('get', response.file.fileName);
-    
+
     
     ss(socket).on('res', (stream, data) => {
       var filename =  `./src/downloads/${path.basename(data.name)}`;
-      console.log(filename)
-      stream.pipe(fs.createWriteStream(filename))
+      var writter = fs.createWriteStream(filename);
+      stream.pipe(writter)
+      
+      writter.on('finish', () => {
+        socket.close();
 
+      })
+
+      
     })
 
   }
