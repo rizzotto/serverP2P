@@ -53,7 +53,7 @@ module.exports = {
         })
       } else {
         peers.map(peer => {
-          if(peer.port === port && peer.ip===ip) {
+          if(peer.port == port && peer.ip==ip) {
             peer.files = files
             peer.time = time.getTime()
           }else {
@@ -69,7 +69,7 @@ module.exports = {
       
 
       const peer = peers.filter(peer => {
-        if(peer.port === port && peer.ip===ip) return peer
+        if(peer.port == port && peer.ip==ip) return peer
       })
       res.send(peer)
     },
@@ -77,9 +77,12 @@ module.exports = {
     async healthCheck(req, res) {
       const { port, ip } = req.body
       const time = new Date()
-  
+
+      
       peers.map(peer => {
-        if(peer.port === port && peer.ip===ip) peer.time = time.getTime()
+        
+        if(peer.port == port && peer.ip==ip) peer.time = time.getTime()
+
       })
 
       res.send(peers)
