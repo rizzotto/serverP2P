@@ -25,7 +25,7 @@ const command = {
       }
 
     }catch(e) {
-      print.error('Erro no lado do servidor');
+      print.error('Erro no servidor');
     }
   }
 }

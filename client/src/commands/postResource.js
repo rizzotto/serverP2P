@@ -13,8 +13,11 @@ const command = {
     }
     const input = await prompt.ask({ type: 'input', name: 'path', message: 'Informe a pasta que contem os arquivos para eviar' })
 
-
     const fileFolder = await filesystem.inspectTree(input.path, {checksum: 'md5'})
+    if(!fileFolder) {
+      print.error('Informa uma pasta válida')
+      return
+    }
 
     const postObject = {
       files: [],
@@ -29,14 +32,15 @@ const command = {
         fileName: file.name,
         fileHash: file.md5,
       })
-      // read the files
-      // filesystem.read(input.path + file.name)
     })
     try{
       const response = await axios.post(`http://${constants.server}:${constants.serverPort}/peer`, postObject)
-      print.success('Arquivos enviados com sucesso')
+      print.success('Os seguintes arquivos foram enviados com sucesso:\n')
+      fileFolder.children.map(file => {
+        print.info(file.name)
+      })
     }catch(e) {
-      print.error('Erro no lado do servidor')
+      print.error('Erro no servidor')
     }
   }
 }

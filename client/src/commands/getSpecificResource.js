@@ -9,7 +9,7 @@ const command = {
   description: 'retorna um recurso especifico',
   run: async toolbox => {
     
-    const { print, prompt } = toolbox
+    const { print, prompt, filesystem } = toolbox
     
     if (constants.server.length==0) {
       print.error('Execute o comando run primeiro')
@@ -17,6 +17,15 @@ const command = {
     }
 
     const { id } = await prompt.ask({ type: 'input', name: 'id', message: 'Informe o ID do recurso' })
+
+    if (
+      isNaN(parseInt(id)) ||
+      id < 0 ||
+      id >= 100000
+    ) {
+      print.error('Informe uma ID válido')
+      return
+    }
     
     
     const call = await axios.get(`http://${constants.server}:${constants.serverPort}/resource/${id}`)
@@ -29,6 +38,7 @@ const command = {
       print.info(`Nome: ${response.file.fileName}, hash: ${response.file.fileHash} \n`)
     }else {
       print.error(`Recurso com id: ${id} não encontrado`)
+      return
     }
     
     
@@ -43,11 +53,14 @@ const command = {
       var writter = fs.createWriteStream(filename);
       stream.pipe(writter)
       
-      writter.on('finish', () => {
+      writter.on('finish', async function() {
         socket.close();
 
-      })
+        const file = await filesystem.inspect(filename, {checksum: 'md5'})
 
+        if (response.file.fileHash === file.md5) print.success('Arquivo recuperado com sucesso! Hash válido')
+        else print.error('Houve um problema no donwload do arquivo, hash inválido')
+      })
       
     })
 
