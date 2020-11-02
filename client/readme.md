@@ -1,25 +1,36 @@
-# client CLI
+# Client CLI
 
-A CLI for client.
-
-## Customizing your CLI
-
-Check out the documentation at https://github.com/infinitered/gluegun/tree/master/docs.
-
-## Publishing to NPM
-
-To package your CLI up for NPM, do this:
+Into the client folder, run 
 
 ```shell
-$ npm login
-$ npm whoami
-$ npm lint
-$ npm test
-(if typescript, run `npm run build` here)
-$ npm publish
+$ npm install
+$ npm link
 ```
+then `client` command is ready to use
+
+## COMMANDS
+
+Commands available
+
+```shell
+$ client -h
+$ client post-resources
+$ client list-all-resources
+$ client get-specific-resource
+$ client test
+```
+
+# Server
+
+Into the server folder, run
+
+```shell
+$ npm install
+% npm run dev
+```
+After this, the server is running
 
 # License
 
-MIT - see LICENSE
+MIT
 
