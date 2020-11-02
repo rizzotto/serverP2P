@@ -1,6 +1,6 @@
 let peers = []
 
-// healthCheck
+// A cada 5 segundos verifica se um peer desconectou e então remove da lista de peers
 setInterval(function() {
  const currentDate = new Date()
 
@@ -15,6 +15,12 @@ setInterval(function() {
 
 module.exports = {
 
+    /**
+     * 
+     * @param {requisition} req 
+     * @param {response} res 
+     * Retorna todos os recursos
+     */
     async resources(req, res) {
       try {
         res.send(peers)
@@ -22,7 +28,13 @@ module.exports = {
         console.log(e)
       }
     },
-    
+
+    /**
+     * 
+     * @param {requisition} req 
+     * @param {response} res 
+     * Retorna um recurso específico, através de um ID
+     */
     async resource(req, res) {
       try{
         const { id } = req.params
@@ -47,6 +59,12 @@ module.exports = {
       }
     },
 
+    /**
+     * 
+     * @param {requisition} req 
+     * @param {response} res 
+     * Registra o peer, passando um body JSON
+     */
     async post(req, res) {
       
       try {
@@ -76,7 +94,6 @@ module.exports = {
           })
         }
         
-  
         const peer = peers.filter(peer => {
           if(peer.port == port && peer.ip==ip) return peer
         })
@@ -87,13 +104,19 @@ module.exports = {
 
     },
 
+    /**
+     * 
+     * @param {requisition} req 
+     * @param {response} res 
+     * Realiza o overlay que atualiza o time do peer
+     */
     async healthCheck(req, res) {
       
       try {
 
         const { port, ip } = req.body
         const time = new Date()
-        
+
         peers.map(peer => {  
           if(peer.port == port && peer.ip==ip) peer.time = time.getTime()
         })
