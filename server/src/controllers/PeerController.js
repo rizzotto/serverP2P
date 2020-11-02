@@ -1,16 +1,16 @@
 let peers = []
 
 // healthCheck
-setInterval(function() {
-  const currentDate = new Date()
-
-  peers.map(peer => {
-    if((currentDate.getTime() - peer.time) / 1000 > 5) {
-      const index = peers.indexOf(peer)
-      peers.splice(index, 1)
-    }
-  })
-}, 5000);
+//setInterval(function() {
+//  const currentDate = new Date()
+//
+//  peers.map(peer => {
+//    if((currentDate.getTime() - peer.time) / 1000 > 5) {
+//      const index = peers.indexOf(peer)
+//      peers.splice(index, 1)
+//    }
+//  })
+//}, 5000);
 
 
 module.exports = {
@@ -40,29 +40,28 @@ module.exports = {
     },
 
     async post(req, res) {
-      const path = req.get('host').split(':')
-      const { files } = req.body
-      const time = new Date()
+      const { files, port } = req.body
+      const ip = req.connection.remoteAddress
 
-      //TODO atualizar o peer se ja existir, e nao criar outro objeto
+      const time = new Date()
 
       if(peers.length === 0) {
         peers.push({
           files,
-          ip: path[0],
-          port: path[1],
+          ip,
+          port,
           time: time.getTime()
         })
       } else {
         peers.map(peer => {
-          if(peer.port === path[1]) {
+          if(peer.port === port && peer.ip===ip) {
             peer.files = files
             peer.time = time.getTime()
           }else {
             peers.push({
               files,
-              ip: path[0],
-              port: path[1],
+              ip,
+              port,
               time: time.getTime()
             })
           }
@@ -71,17 +70,18 @@ module.exports = {
       
 
       const peer = peers.filter(peer => {
-        if(peer.port === path[1]) return peer
+        if(peer.port === port && peer.ip===ip) return peer
       })
       res.send(peer)
     },
 
     async healthCheck(req, res) {
-      const path = req.get('host').split(':')
+      const { port } = req.body
+      const ip = req.connection.remoteAddress
       const time = new Date()
   
       peers.map(peer => {
-        if(peer.port === path[1]) peer.time = time.getTime()
+        if(peer.port === port && peer.ip===ip) peer.time = time.getTime()
       })
 
       res.send(peers)
