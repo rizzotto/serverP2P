@@ -1,5 +1,5 @@
 const axios = require('axios')
-const { constants } = require('buffer')
+const { socket } = require('../utils')
 var exec = require('child_process').exec
 const server = require('http').createServer()
 var io = require('socket.io')(server)
@@ -14,7 +14,9 @@ const command = {
 
     const { serverPort } = await prompt.ask({ type: 'input', name: 'serverPort', message: 'Informe a porta do server' })
 
-    const { socketPort } = await prompt.ask({ type: 'input', name: 'socketPort', message: 'Informe a porta que deseja executar o seu socket' })
+    const { socket } = await prompt.ask({ type: 'input', name: 'socket', message: 'Informe a qual o ip da máquina cliente' })
+    
+    const { socketPort } = await prompt.ask({ type: 'input', name: 'socketPort', message: 'Informe a qual a porta da máquina cliente' })
 
     
     await template.generate({
@@ -23,7 +25,8 @@ const command = {
       props: {
         serverIp: serverIp,
         serverPort: serverPort,
-        socketPort: socketPort
+        socketPort: socketPort,
+        socket: socket
         
       }
     })
@@ -49,8 +52,9 @@ const command = {
     print.info('Overlay ativado, realizando chamadas a cada 5 segundos')
     setInterval(function() {
       print.success('chamou')
-      axios.patch(`http://${server}:${serverPort}/health`, {
-        port: socketPort
+      axios.patch(`http://${serverIp}:${serverPort}/health`, {
+        port: socketPort,
+        ip: socket
       })
     }, 5000)
   }

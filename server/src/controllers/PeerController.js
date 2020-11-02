@@ -40,8 +40,7 @@ module.exports = {
     },
 
     async post(req, res) {
-      const { files, port } = req.body
-      const ip = req.connection.remoteAddress
+      const { files, port, ip } = req.body
 
       const time = new Date()
 
@@ -76,8 +75,7 @@ module.exports = {
     },
 
     async healthCheck(req, res) {
-      const { port } = req.body
-      const ip = req.connection.remoteAddress
+      const { port, ip } = req.body
       const time = new Date()
   
       peers.map(peer => {

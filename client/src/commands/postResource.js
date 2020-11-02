@@ -18,6 +18,7 @@ const command = {
 
     const postObject = {
       files: [],
+      ip: constants.socket,
       port: constants.socketPort
     }
 
