@@ -1,5 +1,8 @@
 const axios = require('axios')
 const constants = require('../utils');
+const ss = require('socket.io-stream');
+const path = require('path');
+const fs = require('fs');
 
 const command = {
   name: 'specific-resource',
@@ -30,16 +33,17 @@ const command = {
     
     
     const io = require('socket.io-client');
-    const socket = io(`http://${response.ip}:${response.port}`);
+    const socket = io(`http://${response.ip}:${response.port}`);    
+    
     socket.emit('get', response.file.fileName);
+    
+    
+    ss(socket).on('res', (stream, data) => {
+      var filename =  `./src/downloads/${path.basename(data.name)}`;
+      console.log(filename)
+      stream.pipe(fs.createWriteStream(filename))
 
-    socket.on('get', async function(msg){
-      console.log(msg);
-      socket.close();
-    });
-    
-    // print.info(`RECURSO RECUPERADO`);
-    
+    })
 
   }
 }
