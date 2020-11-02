@@ -1,3 +1,4 @@
+# P2P
 # Client CLI
 
 Into the client folder, run 
@@ -26,7 +27,7 @@ Into the server folder, run
 
 ```shell
 $ npm install
-% npm run dev
+$ npm run dev
 ```
 After this, the server is running
 
