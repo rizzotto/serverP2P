@@ -1,14 +1,49 @@
 {
   "name": "client",
-  "version": "1.0.0",
-  "description": "client",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "version": "0.0.1",
+  "description": "client CLI",
+  "private": true,
+  "bin": {
+    "client": "bin/client"
   },
-  "author": "",
-  "license": "ISC",
+  "scripts": {
+    "format": "prettier --write **/*.{js,json} && standard --fix",
+    "lint": "standard",
+    "test": "jest",
+    "watch": "jest --watch",
+    "snapupdate": "jest --updateSnapshot",
+    "coverage": "jest --coverage"
+  },
+  "files": [
+    "src",
+    "LICENSE",
+    "readme.md",
+    "docs",
+    "bin"
+  ],
+  "license": "MIT",
   "dependencies": {
-    "md5": "^2.3.0"
+    "axios": "^0.21.0",
+    "gluegun": "latest",
+    "socket.io": "^2.3.0",
+    "socket.io-client": "^2.3.1",
+    "socket.io-stream": "^0.9.1"
+  },
+  "devDependencies": {
+    "standard": "^12.0.1",
+    "prettier": "^1.12.1",
+    "jest": "^24.1.0"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  },
+  "standard": {
+    "env": [
+      "jest"
+    ]
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true
   }
 }
