@@ -31,6 +31,15 @@ $ npm run dev
 ```
 After this, the server is running
 
+## Routes
+
+```javascript
+GET /resources
+GET /resource/:id
+PATCH /health
+POST /peer
+```
+
 # License
 
 MIT
